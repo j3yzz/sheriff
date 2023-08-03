@@ -8,13 +8,13 @@ import (
 type Health struct {
 }
 
-type HandleResponse struct {
-	Status  bool
-	Message string
+type HealthResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
 }
 
 func (h Health) Handle(c echo.Context) error {
-	return c.JSON(http.StatusOK, HandleResponse{
+	return c.JSON(http.StatusOK, HealthResponse{
 		Status:  true,
 		Message: "everything is fine!",
 	})
