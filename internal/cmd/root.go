@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/j3yzz/sheriff/internal/cmd/server"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -21,6 +22,8 @@ func Execute() {
 		Use:   "sheriff",
 		Short: "A simple and secure authentication and user management system for your web applications.",
 	}
+
+	server.Register(cmd)
 
 	if err := cmd.Execute(); err != nil {
 		log.Fatalln(err)
