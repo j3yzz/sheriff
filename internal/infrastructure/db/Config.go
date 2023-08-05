@@ -1,8 +1,9 @@
 package db
 
 type Config struct {
-	MysqlDatabase string `json:"mysqlDatabase" koanf:"MYSQL_DATABASE"`
-	MysqlUser     string `json:"mysqlUser" koanf:"MYSQL_USER"`
-	MysqlPassword string `json:"mysqlPassword" koanf:"MYSQL_PASSWORD"`
-	MysqlPort     string `json:"mysqlPort" koanf:"MYSQL_PORT"`
+	MysqlHost     string `json:"mysqlHost" koanf:"mysql_host"`
+	MysqlDatabase string `json:"mysqlDatabase" koanf:"mysql_database"`
+	MysqlUser     string `json:"mysqlUser" koanf:"mysql_user"`
+	MysqlPassword string `json:"mysqlPassword" koanf:"mysql_password"`
+	MysqlPort     string `json:"mysqlPort" koanf:"mysql_port"`
 }

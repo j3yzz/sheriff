@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/j3yzz/sheriff/internal/infrastructure/config"
+	"github.com/j3yzz/sheriff/internal/infrastructure/db"
 	"github.com/j3yzz/sheriff/internal/infrastructure/http/server"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -21,6 +22,7 @@ func Register(root *cobra.Command) {
 			Run: func(_ *cobra.Command, _ []string) {
 				fx.New(
 					fx.Provide(config.Provide),
+					fx.Provide(db.Provide),
 					fx.Provide(server.Provide),
 					fx.Invoke(main),
 				).Run()
