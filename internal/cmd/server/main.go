@@ -10,10 +10,6 @@ import (
 	"go.uber.org/fx"
 )
 
-func main(_ *echo.Echo) {
-	log.Info("welcome to our server")
-}
-
 func Register(root *cobra.Command) {
 	root.AddCommand(
 		&cobra.Command{
@@ -22,9 +18,13 @@ func Register(root *cobra.Command) {
 			Run: func(_ *cobra.Command, _ []string) {
 				fx.New(
 					fx.Provide(config.Provide),
-					fx.Provide(db.Provide),
+					db.Module,
 					fx.Provide(server.Provide),
-					fx.Invoke(main),
+					fx.Invoke(func(e *echo.Echo) {
+						log.Info("Web server module invoked")
+					}, func(d *db.GormDatabase) {
+						log.Info("Database module invoked")
+					}),
 				).Run()
 			},
 		},

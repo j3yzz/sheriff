@@ -12,7 +12,6 @@ import (
 
 func Provide(lc fx.Lifecycle) *echo.Echo {
 	app := echo.New()
-
 	handler.Health{}.Register(app.Group("/api"))
 
 	lc.Append(
