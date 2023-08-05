@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"errors"
-	"github.com/j3yzz/sheriff/internal/handler"
+	"github.com/j3yzz/sheriff/internal/infrastructure/router"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 	"log"
@@ -12,7 +12,7 @@ import (
 
 func Provide(lc fx.Lifecycle) *echo.Echo {
 	app := echo.New()
-	handler.Health{}.Register(app.Group("/api"))
+	router.Register(app)
 
 	lc.Append(
 		fx.Hook{
