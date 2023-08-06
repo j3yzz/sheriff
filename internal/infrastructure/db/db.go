@@ -9,7 +9,7 @@ import (
 )
 
 type GormDatabase struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func New(cfg Config) (database *GormDatabase) {
@@ -28,7 +28,7 @@ func New(cfg Config) (database *GormDatabase) {
 	}
 
 	database = new(GormDatabase)
-	database.db = db
+	database.DB = db
 
 	return
 }

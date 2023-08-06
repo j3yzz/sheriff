@@ -11,7 +11,7 @@ import (
 type MigrateError func() error
 
 func Migrate(db *GormDatabase) error {
-	sqlDB, _ := db.db.DB()
+	sqlDB, _ := db.DB.DB()
 	instance, err := migrateDriver.WithInstance(sqlDB, &migrateDriver.Config{})
 	if err != nil {
 		return errors.New(fmt.Sprintf("error in connection to mysql: %v", err))
