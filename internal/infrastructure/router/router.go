@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/j3yzz/sheriff/internal/handler"
+	"github.com/j3yzz/sheriff/internal/infrastructure/http/handler"
 	"github.com/labstack/echo/v4"
 )
 
