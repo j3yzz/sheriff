@@ -8,6 +8,8 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+type MigrateError func() error
+
 func Migrate(db *GormDatabase) error {
 	sqlDB, _ := db.db.DB()
 	instance, err := migrateDriver.WithInstance(sqlDB, &migrateDriver.Config{})
@@ -23,15 +25,12 @@ func Migrate(db *GormDatabase) error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("error in creating migraton database instance: %v", err))
 	}
-	err = m.Up()
-	if err != nil {
-		return errors.New(fmt.Sprintf("error in up migration: %v", err))
-	}
+	_ = m.Up()
 
 	return nil
 }
 
-func NewMigrator(db *GormDatabase) func() error {
+func NewMigrator(db *GormDatabase) MigrateError {
 	return func() error {
 		return Migrate(db)
 	}
