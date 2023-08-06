@@ -24,6 +24,12 @@ func Register(root *cobra.Command) {
 						log.Info("Web server module invoked")
 					}, func(d *db.GormDatabase) {
 						log.Info("Database module invoked")
+					}, func(migrator func() error) {
+						if err := migrator(); err != nil {
+							log.Fatalf("error in migrating database: %v", err)
+						} else {
+							log.Info("Migrating database invoked")
+						}
 					}),
 				).Run()
 			},

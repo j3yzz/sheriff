@@ -1,18 +1,18 @@
 package db
 
 import (
-	"errors"
 	"fmt"
 	"go.uber.org/fx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 )
 
 type GormDatabase struct {
 	db *gorm.DB
 }
 
-func New(cfg Config) (database *GormDatabase, err error) {
+func New(cfg Config) (database *GormDatabase) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.MysqlUser,
@@ -24,8 +24,7 @@ func New(cfg Config) (database *GormDatabase, err error) {
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		err = errors.New(fmt.Sprintf("error in connection to mysql: %w", err))
-		return
+		log.Fatalf("error in connection to mysql: %v", err)
 	}
 
 	database = new(GormDatabase)
@@ -34,4 +33,7 @@ func New(cfg Config) (database *GormDatabase, err error) {
 	return
 }
 
-var Module = fx.Options(fx.Provide(New))
+var Module = fx.Options(
+	fx.Provide(New),
+	fx.Provide(NewMigrator),
+)
