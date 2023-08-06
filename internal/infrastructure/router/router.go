@@ -7,4 +7,6 @@ import (
 
 func Register(app *echo.Echo) {
 	handler.Health{}.Register(app.Group("/api"))
+
+	handler.Auth{}.Register(app.Group("/api"))
 }
