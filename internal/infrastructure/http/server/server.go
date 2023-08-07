@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 	"github.com/j3yzz/sheriff/internal/infrastructure/router"
+	"github.com/j3yzz/sheriff/internal/repository"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 	"log"
 	"net/http"
 )
 
-func Provide(lc fx.Lifecycle) *echo.Echo {
+func Provide(lc fx.Lifecycle, repos *repository.Repositories) *echo.Echo {
 	app := echo.New()
-	router.Register(app)
+	router.Register(app, repos)
 
 	lc.Append(
 		fx.Hook{

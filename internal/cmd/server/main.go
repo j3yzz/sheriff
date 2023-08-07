@@ -4,6 +4,7 @@ import (
 	"github.com/j3yzz/sheriff/internal/infrastructure/config"
 	"github.com/j3yzz/sheriff/internal/infrastructure/db"
 	"github.com/j3yzz/sheriff/internal/infrastructure/http/server"
+	"github.com/j3yzz/sheriff/internal/repository"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/cobra"
@@ -20,6 +21,7 @@ func Register(root *cobra.Command) {
 					fx.Provide(config.Provide),
 					db.Module,
 					fx.Provide(server.Provide),
+					fx.Provide(repository.ProvideRepos),
 					fx.Invoke(func(e *echo.Echo) {
 						log.Info("Web server module invoked")
 					}, func(d *db.GormDatabase) {
@@ -30,6 +32,8 @@ func Register(root *cobra.Command) {
 						} else {
 							log.Info("Migrating database invoked")
 						}
+					}, func(repo *repository.Repositories) {
+						log.Info("Repositories invoked")
 					}),
 				).Run()
 			},
