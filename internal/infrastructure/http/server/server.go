@@ -5,15 +5,16 @@ import (
 	"errors"
 	"github.com/j3yzz/sheriff/internal/infrastructure/router"
 	"github.com/j3yzz/sheriff/internal/repository"
+	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 	"log"
 	"net/http"
 )
 
-func Provide(lc fx.Lifecycle, repos *repository.Repositories) *echo.Echo {
+func Provide(lc fx.Lifecycle, repos *repository.Repositories, smsSvcCfg kavenegarsvc.Config) *echo.Echo {
 	app := echo.New()
-	router.Register(app, repos)
+	router.Register(app, repos, smsSvcCfg)
 
 	lc.Append(
 		fx.Hook{

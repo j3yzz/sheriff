@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/j3yzz/sheriff/internal/infrastructure/db"
+	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
@@ -12,7 +13,8 @@ import (
 type Config struct {
 	fx.Out
 
-	Database db.Config `json:"database" koanf:"database"`
+	Database   db.Config           `json:"database" koanf:"database"`
+	SmsService kavenegarsvc.Config `json:"sms_service" koanf:"sms_service"`
 }
 
 func Provide() Config {
