@@ -86,7 +86,7 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 	}
 
 	otpTokenTask := otptokentask.OtpTokenTask{Store: a.OtpTokenStore}
-	_, err = otpTokenTask.CreateNewOtpToken(user)
+	otpToken, err := otpTokenTask.CreateNewOtpToken(user)
 
 	if err != nil {
 		if err.Error() == otptokenrepo.FoundValidOTPToken {
@@ -102,7 +102,8 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 		}
 
 	}
-	// send otp token to user
+
+	a.SmsService.SendOTP(user.Phone, otpToken.Token)
 
 	return c.JSON(http.StatusOK, response.SuccessResponse{
 		Success: true,

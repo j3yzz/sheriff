@@ -5,6 +5,7 @@ import (
 	"github.com/j3yzz/sheriff/internal/infrastructure/db"
 	"github.com/j3yzz/sheriff/internal/model"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenentity"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -49,9 +50,9 @@ func (r *OtpTokenRepository) FindByToken(e otptokenentity.OtpTokenCreateEntity) 
 
 func (r *OtpTokenRepository) FindValidOTPToken(userID uint) (model.OtpToken, error) {
 	var otpToken model.OtpToken
-	result := r.db.DB.Table(tableName).Where("user_id = ? and expire_at > ?", userID, time.Now()).Last(&otpToken)
+	result := r.db.DB.Table(tableName).Where("user_id = ? and expire_at > ?", userID, time.Now()).First(&otpToken)
 
-	if result.Error != nil {
+	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
 		return model.OtpToken{}, result.Error
 	}
 

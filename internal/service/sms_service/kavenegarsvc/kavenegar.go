@@ -35,25 +35,22 @@ func (svc *KavenegarSvc) Send(receptors []string, message string) {
 	}
 }
 
-func SendOTP(receptor string, token string) {
-	//api := kavenegar.New(apiKey)
-	//params := &kavenegar.VerifyLookupParam{}
-	//
-	//if res, err := api.Verify.Lookup(receptor, template, token, params); err != nil {
-	//	switch err := err.(type) {
-	//	case *kavenegar.APIError:
-	//		fmt.Println(err)
-	//		// do something
-	//	case *kavenegar.HTTPError:
-	//		fmt.Println(err)
-	//		// do something
-	//	default:
-	//		fmt.Println(err)
-	//		// do something
-	//	}
-	//} else {
-	//	// do something
-	//	fmt.Println(res.MessageID, res.Status)
-	//}
+func (svc *KavenegarSvc) SendOTP(receptor string, token string) {
+	params := &kavenegar.VerifyLookupParam{}
 
+	if res, err := svc.Service.Verify.Lookup(receptor, svc.Template, token, params); err != nil {
+		switch err := err.(type) {
+		case *kavenegar.APIError:
+			fmt.Println(err)
+			break
+		case *kavenegar.HTTPError:
+			fmt.Println(err)
+			break
+		default:
+			fmt.Println(err)
+		}
+	} else {
+		// do something
+		fmt.Println(res.MessageID, res.Status)
+	}
 }
