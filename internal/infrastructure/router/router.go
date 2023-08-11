@@ -8,9 +8,12 @@ import (
 )
 
 func Register(app *echo.Echo, repos *repository.Repositories, smsSvcCfg kavenegarsvc.Config) {
+	kavenegarSvc := kavenegarsvc.New(smsSvcCfg)
+
 	handler.Health{}.Register(app.Group("/api"))
 
 	handler.Auth{
-		Store: repos.UserRepository,
+		Store:      repos.UserRepository,
+		SmsService: kavenegarSvc,
 	}.Register(app.Group("/api"))
 }

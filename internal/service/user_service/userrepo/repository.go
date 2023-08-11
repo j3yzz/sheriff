@@ -7,4 +7,5 @@ import (
 
 type Repository interface {
 	CreateUser(user userentity.UserRegisterEntity) (model.User, error)
+	FindByPhone(phone string) (model.User, error)
 }
