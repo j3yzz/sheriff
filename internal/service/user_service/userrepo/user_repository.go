@@ -32,7 +32,7 @@ func (r *UserRepository) CreateUser(user userentity.UserRegisterEntity) (model.U
 
 func (r *UserRepository) FindByPhone(phone string) (model.User, error) {
 	var user model.User
-	result := r.db.DB.Raw("SELECT * FROM users WHERE phone = ?", phone).Scan(&user)
+	result := r.db.DB.Raw("SELECT * FROM users WHERE phone = ? LIMIT 1", phone).Scan(&user)
 
 	if result.Error != nil {
 		return model.User{}, result.Error
