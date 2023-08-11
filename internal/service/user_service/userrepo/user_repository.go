@@ -17,8 +17,10 @@ func New(db *db.GormDatabase) *UserRepository {
 	}
 }
 
+const tableName = "users"
+
 func (r *UserRepository) CreateUser(user userentity.UserRegisterEntity) (model.User, error) {
-	result := r.db.DB.Table("users").Omit("id").Create(&user)
+	result := r.db.DB.Table(tableName).Omit("id").Create(&user)
 
 	if result.Error != nil {
 		return model.User{}, result.Error
@@ -32,7 +34,7 @@ func (r *UserRepository) CreateUser(user userentity.UserRegisterEntity) (model.U
 
 func (r *UserRepository) FindByPhone(phone string) (model.User, error) {
 	var user model.User
-	result := r.db.DB.Raw("SELECT * FROM users WHERE phone = ? LIMIT 1", phone).Scan(&user)
+	result := r.db.DB.Table(tableName).Where("phone = ?", phone).First(&user)
 
 	if result.Error != nil {
 		return model.User{}, result.Error
