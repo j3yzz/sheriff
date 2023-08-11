@@ -3,6 +3,8 @@ package handler
 import (
 	"github.com/j3yzz/sheriff/internal/infrastructure/http/request"
 	"github.com/j3yzz/sheriff/internal/pkg/response"
+	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
+	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokentask"
 	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userentity"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userrepo"
@@ -11,8 +13,9 @@ import (
 )
 
 type Auth struct {
-	Store      userrepo.Repository
-	SmsService *kavenegarsvc.KavenegarSvc
+	Store         userrepo.Repository
+	SmsService    *kavenegarsvc.KavenegarSvc
+	OtpTokenStore otptokenrepo.Repository
 }
 
 func (a Auth) RegisterHandler(c echo.Context) error {
@@ -74,7 +77,7 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 	}
 
 	// find phone number
-	_, err := a.Store.FindByPhone(req.Phone)
+	user, err := a.Store.FindByPhone(req.Phone)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, response.ErrorResponse{
 			Success: false,
@@ -82,7 +85,23 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 		})
 	}
 
-	// create otp token
+	otpTokenTask := otptokentask.OtpTokenTask{Store: a.OtpTokenStore}
+	_, err = otpTokenTask.CreateNewOtpToken(user)
+
+	if err != nil {
+		if err.Error() == otptokenrepo.FoundValidOTPToken {
+			return echo.NewHTTPError(http.StatusNotFound, response.ErrorResponse{
+				Success: false,
+				Message: "otp_token.has.been.sent",
+			})
+		} else {
+			return echo.NewHTTPError(http.StatusNotFound, response.ErrorResponse{
+				Success: false,
+				Message: err.Error(),
+			})
+		}
+
+	}
 	// send otp token to user
 
 	return c.JSON(http.StatusOK, response.SuccessResponse{

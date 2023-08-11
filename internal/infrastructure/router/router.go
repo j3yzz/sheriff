@@ -13,7 +13,8 @@ func Register(app *echo.Echo, repos *repository.Repositories, smsSvcCfg kavenega
 	handler.Health{}.Register(app.Group("/api"))
 
 	handler.Auth{
-		Store:      repos.UserRepository,
-		SmsService: kavenegarSvc,
+		Store:         repos.UserRepository,
+		SmsService:    kavenegarSvc,
+		OtpTokenStore: repos.OtpTokenRepository,
 	}.Register(app.Group("/api"))
 }
