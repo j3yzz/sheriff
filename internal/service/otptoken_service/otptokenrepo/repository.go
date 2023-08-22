@@ -9,4 +9,5 @@ type Repository interface {
 	CreateOtpToken(e otptokenentity.OtpTokenCreateEntity) (model.OtpToken, error)
 	FindByToken(e otptokenentity.OtpTokenCreateEntity) (model.OtpToken, error)
 	FindValidOTPToken(userID uint) (model.OtpToken, error)
+	FindValidOTPTokenByUserAndToken(userID uint, token string) (model.OtpToken, error)
 }

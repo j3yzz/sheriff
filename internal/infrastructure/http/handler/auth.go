@@ -111,7 +111,47 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 	})
 }
 
+func (a Auth) VerifyTokenHandler(c echo.Context) error {
+	var req request.VerifyTokenRequest
+
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	if err := req.Validate(); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	user, err := a.Store.FindByPhone(req.Phone)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, response.ErrorResponse{
+			Success: false,
+			Message: "user.not_found",
+		})
+	}
+
+	_, err = a.OtpTokenStore.FindValidOTPTokenByUserAndToken(user.ID, req.Token)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, response.ErrorResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response.SuccessResponse{
+		Success: true,
+		Data:    user,
+	})
+}
+
 func (a Auth) Register(g *echo.Group) {
 	g.POST("/auth/register", a.RegisterHandler)
 	g.POST("/auth/token/request", a.RequestTokenHandler)
+	g.POST("/auth/token/verify", a.VerifyTokenHandler)
 }

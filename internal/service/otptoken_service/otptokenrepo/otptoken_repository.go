@@ -62,3 +62,18 @@ func (r *OtpTokenRepository) FindValidOTPToken(userID uint) (model.OtpToken, err
 
 	return otpToken, nil
 }
+
+func (r *OtpTokenRepository) FindValidOTPTokenByUserAndToken(userID uint, token string) (model.OtpToken, error) {
+	var otpToken model.OtpToken
+	result := r.db.DB.Table(tableName).Where("user_id = ? and expire_at > ? and token = ?", userID, time.Now(), token).First(&otpToken)
+
+	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+		return model.OtpToken{}, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return model.OtpToken{}, errors.New("otp_token.not_found")
+	}
+
+	return otpToken, nil
+}
