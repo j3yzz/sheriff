@@ -6,7 +6,7 @@ import (
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokentask"
 	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
-	"github.com/j3yzz/sheriff/internal/service/user_service/userentity"
+	"github.com/j3yzz/sheriff/internal/service/user_service"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userrepo"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -20,26 +20,19 @@ type Auth struct {
 
 func (a Auth) RegisterHandler(c echo.Context) error {
 	var req request.RegisterRequest
-
-	if err := c.Bind(&req); err != nil {
+	validatedEntity, validatedErr := req.Validated(c)
+	if validatedErr != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
 			Success: false,
-			Message: err.Error(),
+			Message: validatedErr.Error(),
 		})
 	}
 
-	if err := req.Validate(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
-			Success: false,
-			Message: err.Error(),
-		})
+	svc := user_service.UserService{
+		UserStore: a.Store,
 	}
 
-	u := userentity.UserRegisterEntity{
-		Phone: req.Phone,
-	}
-
-	user, err := a.Store.CreateUser(u)
+	user, err := svc.Register(validatedEntity)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
 			Success: false,
