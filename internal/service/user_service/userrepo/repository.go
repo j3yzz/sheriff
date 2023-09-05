@@ -1,7 +1,7 @@
 package userrepo
 
 import (
-	"github.com/j3yzz/sheriff/internal/model"
+	"github.com/j3yzz/sheriff/internal/service/user_service/model"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userentity"
 )
 
