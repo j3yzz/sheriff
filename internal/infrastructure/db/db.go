@@ -1,7 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
+	"github.com/golang-migrate/migrate/v4"
+	migrateDriver "github.com/golang-migrate/migrate/v4/database/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -29,7 +32,30 @@ func New(cfg Config) (database *GormDatabase) {
 	database = new(GormDatabase)
 	database.DB = db
 
-	NewMigrator(database)
+	err = runMigrations(database)
+	if err != nil {
+		log.Fatalf("error in run migrations: %v", err)
+	}
 
 	return
+}
+
+func runMigrations(db *GormDatabase) error {
+	sqlDB, _ := db.DB.DB()
+	instance, err := migrateDriver.WithInstance(sqlDB, &migrateDriver.Config{})
+	if err != nil {
+		return errors.New(fmt.Sprintf("error in connection to mysql: %v", err))
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://migrations",
+		"mysql",
+		instance,
+	)
+	if err != nil {
+		return errors.New(fmt.Sprintf("error in creating migraton database instance: %v", err))
+	}
+	_ = m.Up()
+
+	return nil
 }
