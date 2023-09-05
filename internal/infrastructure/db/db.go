@@ -33,7 +33,7 @@ func New(cfg Config) (database *GormDatabase) {
 	database = new(GormDatabase)
 	database.DB = db
 
-	err = runMigrations(database)
+	err = RunMigrations(database)
 	if err != nil {
 		log.Fatalf("error in run migrations: %v", err)
 	}
@@ -41,7 +41,7 @@ func New(cfg Config) (database *GormDatabase) {
 	return
 }
 
-func runMigrations(db *GormDatabase) error {
+func RunMigrations(db *GormDatabase) error {
 	sqlDB, _ := db.DB.DB()
 	instance, err := migrateDriver.WithInstance(sqlDB, &migrateDriver.Config{})
 	if err != nil {
@@ -56,7 +56,5 @@ func runMigrations(db *GormDatabase) error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("error in creating migraton database instance: %v", err))
 	}
-	_ = m.Up()
-
-	return nil
+	return m.Up()
 }
