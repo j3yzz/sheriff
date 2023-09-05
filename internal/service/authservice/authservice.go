@@ -2,6 +2,7 @@ package authservice
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/j3yzz/sheriff/internal/service/authservice/accesstokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/user_service/model"
 	"strings"
@@ -21,20 +22,47 @@ func New(config Config, accessTokenRepo accesstokenrepo.Repository) AuthService 
 }
 
 func (s AuthService) CreateAccessToken(user model.User) (string, error) {
-	return createToken(user, s.config.AccessExpirationTime, s.config.SignKey, AccessTokenSubject)
+	tokenPayload := AccessTokenSubject + "/" + uuid.New().String()
+	expirationTime := time.Now().Add(s.config.AccessExpirationTime)
+
+	token, err := createToken(user, expirationTime, s.config.SignKey, AccessTokenSubject, tokenPayload)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime, "127.0.05.2", "firefox")
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 func (s AuthService) CreateRefreshToken(user model.User) (string, error) {
-	return createToken(user, s.config.RefreshExpirationTime, s.config.SignKey, RefreshTokenSubject)
+	tokenPayload := RefreshTokenSubject + "/" + uuid.New().String()
+	expirationTime := time.Now().Add(s.config.RefreshExpirationTime)
+
+	token, err := createToken(user, expirationTime, s.config.SignKey, RefreshTokenSubject, tokenPayload)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime, "127.0.05.2", "firefox")
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
-func createToken(user model.User, expirationTime time.Duration, signKey string, tokenSubject string) (string, error) {
+func createToken(user model.User, expirationTime time.Time, signKey string, tokenSubject string, tokenPayload string) (string, error) {
 	claims := &Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   tokenSubject,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expirationTime)),
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 		UserID: user.ID,
+		Token:  tokenPayload,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
