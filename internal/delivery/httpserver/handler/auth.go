@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"github.com/j3yzz/sheriff/internal/adapter/sms_adapter/kavenegar_adapter"
 	"github.com/j3yzz/sheriff/internal/delivery/httpserver/httprequest"
 	"github.com/j3yzz/sheriff/internal/pkg/response"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokentask"
-	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
 	"github.com/j3yzz/sheriff/internal/service/user_service"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userrepo"
 	"github.com/labstack/echo/v4"
@@ -14,7 +14,7 @@ import (
 
 type Auth struct {
 	Store         userrepo.Repository
-	SmsService    *kavenegarsvc.KavenegarSvc
+	SmsService    *kavenegar_adapter.KavenegarSvc
 	OtpTokenStore otptokenrepo.Repository
 }
 

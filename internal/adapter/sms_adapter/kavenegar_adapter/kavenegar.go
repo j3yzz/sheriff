@@ -1,4 +1,4 @@
-package kavenegarsvc
+package kavenegar_adapter
 
 import (
 	"fmt"
