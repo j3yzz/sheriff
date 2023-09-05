@@ -5,3 +5,8 @@ type UserRegisterEntity struct {
 	Phone    string
 	Password string
 }
+
+type LoginEntity struct {
+	Phone    string
+	Password string
+}
