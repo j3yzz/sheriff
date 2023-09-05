@@ -1,9 +1,9 @@
 package server
 
 import (
+	"github.com/j3yzz/sheriff/internal/delivery/http/server"
 	"github.com/j3yzz/sheriff/internal/infrastructure/config"
 	"github.com/j3yzz/sheriff/internal/infrastructure/db"
-	"github.com/j3yzz/sheriff/internal/infrastructure/http/server"
 	"github.com/j3yzz/sheriff/internal/repository"
 	"github.com/spf13/cobra"
 )

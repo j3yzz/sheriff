@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/j3yzz/sheriff/internal/infrastructure/http/request"
+	"github.com/j3yzz/sheriff/internal/delivery/http/httprequest"
 	"github.com/j3yzz/sheriff/internal/pkg/response"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokentask"
@@ -19,7 +19,7 @@ type Auth struct {
 }
 
 func (a Auth) RegisterHandler(c echo.Context) error {
-	var req request.RegisterRequest
+	var req httprequest.RegisterRequest
 	validatedEntity, validatedErr := req.Validated(c)
 	if validatedErr != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
@@ -53,7 +53,7 @@ func (a Auth) RegisterHandler(c echo.Context) error {
 }
 
 func (a Auth) RequestTokenHandler(c echo.Context) error {
-	var req request.RegisterRequest
+	var req httprequest.RegisterRequest
 
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
@@ -105,7 +105,7 @@ func (a Auth) RequestTokenHandler(c echo.Context) error {
 }
 
 func (a Auth) VerifyTokenHandler(c echo.Context) error {
-	var req request.VerifyTokenRequest
+	var req httprequest.VerifyTokenRequest
 
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
