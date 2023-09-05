@@ -1,34 +1,20 @@
 package server
 
 import (
-	"context"
 	"errors"
+	"github.com/j3yzz/sheriff/internal/infrastructure/config"
 	"github.com/j3yzz/sheriff/internal/infrastructure/router"
 	"github.com/j3yzz/sheriff/internal/repository"
-	"github.com/j3yzz/sheriff/internal/service/sms_service/kavenegarsvc"
 	"github.com/labstack/echo/v4"
-	"go.uber.org/fx"
 	"log"
 	"net/http"
 )
 
-func Provide(lc fx.Lifecycle, repos *repository.Repositories, smsSvcCfg kavenegarsvc.Config) *echo.Echo {
+func Provide(repos *repository.Repositories, cfg config.Config) {
 	app := echo.New()
-	router.Register(app, repos, smsSvcCfg)
+	router.Register(app, repos, cfg)
 
-	lc.Append(
-		fx.Hook{
-			OnStart: func(_ context.Context) error {
-				go func() {
-					if err := app.Start(":8080"); !errors.Is(err, http.ErrServerClosed) {
-						log.Fatal("echo init failed", err)
-					}
-				}()
-				return nil
-			},
-			OnStop: app.Shutdown,
-		},
-	)
-
-	return app
+	if err := app.Start(":8080"); !errors.Is(err, http.ErrServerClosed) {
+		log.Fatal("echo init failed", err)
+	}
 }
