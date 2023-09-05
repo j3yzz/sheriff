@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	migrateDriver "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
