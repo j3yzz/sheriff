@@ -2,18 +2,21 @@ package authservice
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/j3yzz/sheriff/internal/service/authservice/accesstokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/user_service/model"
 	"strings"
 	"time"
 )
 
 type AuthService struct {
-	config Config
+	config          Config
+	accessTokenRepo accesstokenrepo.Repository
 }
 
-func New(config Config) AuthService {
+func New(config Config, accessTokenRepo accesstokenrepo.Repository) AuthService {
 	return AuthService{
-		config: config,
+		config:          config,
+		accessTokenRepo: accessTokenRepo,
 	}
 }
 

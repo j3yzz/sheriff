@@ -14,7 +14,7 @@ func Register(app *echo.Echo, repos *repository.Repositories, cfg config.Config)
 
 	handler.Health{}.Register(apiApp)
 
-	authSvc := authservice.New(cfg.AuthService)
+	authSvc := authservice.New(cfg.AuthService, repos.AccessTokenRepository)
 
 	userSvc := user_service.UserService{
 		UserStore: repos.UserRepository,

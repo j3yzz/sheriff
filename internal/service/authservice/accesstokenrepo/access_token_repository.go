@@ -35,3 +35,7 @@ func (a *AccessTokenRepository) CreateAccessToken(token string, userID uint, exp
 
 	return accessToken, nil
 }
+
+func (a *AccessTokenRepository) FindByToken(token string) (model.AccessToken, error) {
+	panic("implement me")
+}
