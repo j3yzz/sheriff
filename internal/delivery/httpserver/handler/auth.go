@@ -3,16 +3,13 @@ package handler
 import (
 	"github.com/j3yzz/sheriff/internal/delivery/httpserver/httprequest"
 	"github.com/j3yzz/sheriff/internal/pkg/response"
-	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/user_service"
-	"github.com/j3yzz/sheriff/internal/service/user_service/userrepo"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 type Auth struct {
-	Store         userrepo.Repository
-	OtpTokenStore otptokenrepo.Repository
+	UserSvc user_service.UserService
 }
 
 func (a Auth) RegisterHandler(c echo.Context) error {
@@ -25,11 +22,7 @@ func (a Auth) RegisterHandler(c echo.Context) error {
 		})
 	}
 
-	svc := user_service.UserService{
-		UserStore: a.Store,
-	}
-
-	user, err := svc.Register(validatedEntity)
+	user, err := a.UserSvc.Register(validatedEntity)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
 			Success: false,
