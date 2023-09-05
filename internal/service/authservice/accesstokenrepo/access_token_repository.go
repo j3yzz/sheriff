@@ -18,11 +18,9 @@ func New(db *db.GormDatabase) *AccessTokenRepository {
 
 const tableName = "access_tokens"
 
-func (a *AccessTokenRepository) CreateAccessToken(token string, userID uint, expireTime time.Time, ipAddress string, userAgent string) (model.AccessToken, error) {
+func (a *AccessTokenRepository) CreateAccessToken(token string, userID uint, expireTime time.Time) (model.AccessToken, error) {
 	accessToken := model.AccessToken{
 		UserID:     userID,
-		IpAddress:  ipAddress,
-		UserAgent:  userAgent,
 		Token:      token,
 		ExpireTime: expireTime,
 	}

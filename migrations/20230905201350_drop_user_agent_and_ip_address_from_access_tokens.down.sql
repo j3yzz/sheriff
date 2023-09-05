@@ -1,0 +1,3 @@
+ALTER TABLE access_tokens
+ADD COLUMN user_agent VARCHAR(255) NOT NULL,
+ADD COLUMN ip_address VARCHAR(255);

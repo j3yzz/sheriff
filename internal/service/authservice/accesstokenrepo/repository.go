@@ -6,6 +6,6 @@ import (
 )
 
 type Repository interface {
-	CreateAccessToken(token string, userID uint, expireTime time.Time, ipAddress string, userAgent string) (model.AccessToken, error)
+	CreateAccessToken(token string, userID uint, expireTime time.Time) (model.AccessToken, error)
 	FindByToken(token string) (model.AccessToken, error)
 }

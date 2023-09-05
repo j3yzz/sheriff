@@ -30,7 +30,7 @@ func (s AuthService) CreateAccessToken(user model.User) (string, error) {
 		return "", err
 	}
 
-	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime, "127.0.05.2", "firefox")
+	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime)
 	if err != nil {
 		return "", err
 	}
@@ -47,7 +47,7 @@ func (s AuthService) CreateRefreshToken(user model.User) (string, error) {
 		return "", err
 	}
 
-	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime, "127.0.05.2", "firefox")
+	_, err = s.accessTokenRepo.CreateAccessToken(tokenPayload, user.ID, expirationTime)
 	if err != nil {
 		return "", err
 	}
