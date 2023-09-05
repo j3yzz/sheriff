@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"go.uber.org/fx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -30,10 +29,7 @@ func New(cfg Config) (database *GormDatabase) {
 	database = new(GormDatabase)
 	database.DB = db
 
+	NewMigrator(database)
+
 	return
 }
-
-var Module = fx.Options(
-	fx.Provide(New),
-	fx.Provide(NewMigrator),
-)
