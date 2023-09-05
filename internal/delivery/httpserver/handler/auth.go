@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/j3yzz/sheriff/internal/delivery/http/httprequest"
+	"github.com/j3yzz/sheriff/internal/delivery/httpserver/httprequest"
 	"github.com/j3yzz/sheriff/internal/pkg/response"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokenrepo"
 	"github.com/j3yzz/sheriff/internal/service/otptoken_service/otptokentask"
