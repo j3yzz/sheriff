@@ -52,5 +52,5 @@ func (a Auth) RegisterHandler(c echo.Context) error {
 }
 
 func (a Auth) Register(g *echo.Group) {
-	g.POST("/auth/register", a.RegisterHandler)
+	g.POST("/register", a.RegisterHandler)
 }

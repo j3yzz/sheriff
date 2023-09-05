@@ -9,13 +9,15 @@ import (
 )
 
 func Register(app *echo.Echo, repos *repository.Repositories, cfg config.Config) {
+	apiApp := app.Group("/api")
+
 	kavenegarAdapter := kavenegar_adapter.New(cfg.SmsService)
 
-	handler.Health{}.Register(app.Group("/api"))
+	handler.Health{}.Register(apiApp)
 
 	handler.Auth{
 		Store:         repos.UserRepository,
 		SmsService:    kavenegarAdapter,
 		OtpTokenStore: repos.OtpTokenRepository,
-	}.Register(app.Group("/api"))
+	}.Register(apiApp.Group("/auth"))
 }
