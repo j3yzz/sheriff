@@ -56,5 +56,14 @@ func RunMigrations(db *GormDatabase) error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("error in creating migraton database instance: %v", err))
 	}
-	return m.Up()
+	if err := m.Up(); err != nil {
+		if err.Error() == "no change" {
+			log.Println("no change made by migration scripts")
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
