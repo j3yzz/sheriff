@@ -3,6 +3,7 @@ package authservice
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/j3yzz/sheriff/internal/service/user_service/model"
+	"strings"
 	"time"
 )
 
@@ -36,4 +37,22 @@ func createToken(user model.User, expirationTime time.Duration, signKey string, 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(signKey))
+}
+
+func (s AuthService) ParseToken(tokenString string) (*Claims, error) {
+	tokenString = strings.Replace(tokenString, "Bearer ", "", -1)
+
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.config.SignKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, err
 }
