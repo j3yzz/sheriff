@@ -10,13 +10,15 @@ import (
 )
 
 type RegisterRequest struct {
-	Phone string `json:"phone"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
 }
 
 func (r RegisterRequest) Validate() error {
 	if err := validation.ValidateStruct(
 		&r,
 		validation.Field(&r.Phone, validation.Required),
+		validation.Field(&r.Password, validation.Required),
 	); err != nil {
 		return fmt.Errorf("register request validation failed: %w", err)
 	}
@@ -40,7 +42,8 @@ func (r RegisterRequest) Validated(c echo.Context) (userentity.UserRegisterEntit
 	}
 
 	u := userentity.UserRegisterEntity{
-		Phone: r.Phone,
+		Phone:    r.Phone,
+		Password: r.Password,
 	}
 
 	return u, nil

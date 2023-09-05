@@ -1,6 +1,7 @@
 package userentity
 
 type UserRegisterEntity struct {
-	ID    uint
-	Phone string
+	ID       uint
+	Phone    string
+	Password string
 }
