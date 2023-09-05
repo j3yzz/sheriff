@@ -42,6 +42,28 @@ func (a Auth) RegisterHandler(c echo.Context) error {
 	})
 }
 
+func (a Auth) LoginHandler(c echo.Context) error {
+	var req httprequest.LoginRequest
+	validatedEntity, validatedErr := req.Validated(c)
+	if validatedErr != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
+			Success: false,
+			Message: validatedErr.Error(),
+		})
+	}
+
+	resp, err := a.UserSvc.Login(validatedEntity)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, response.ErrorResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
 func (a Auth) Register(g *echo.Group) {
 	g.POST("/register", a.RegisterHandler)
+	g.POST("/login", a.LoginHandler)
 }
