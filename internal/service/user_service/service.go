@@ -2,6 +2,7 @@ package user_service
 
 import (
 	"errors"
+	"github.com/j3yzz/sheriff/internal/service/authservice"
 	"github.com/j3yzz/sheriff/internal/service/user_service/model"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userentity"
 	"github.com/j3yzz/sheriff/internal/service/user_service/userrepo"
@@ -10,6 +11,7 @@ import (
 
 type UserService struct {
 	UserStore userrepo.Repository
+	AuthSvc   authservice.AuthService
 }
 
 func (u *UserService) Register(validatedEntity userentity.UserRegisterEntity) (model.User, error) {
@@ -31,22 +33,52 @@ func (u *UserService) Register(validatedEntity userentity.UserRegisterEntity) (m
 	return user, nil
 }
 
-func (u *UserService) Login(e userentity.LoginEntity) (model.User, error) {
-	// check user is exists or not and get user
+type UserInfo struct {
+	ID    uint   `json:"ID"`
+	Phone string `json:"phone"`
+	Name  string `json:"name"`
+}
+
+type Tokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type LoginResponse struct {
+	User   UserInfo `json:"user"`
+	Tokens Tokens   `json:"tokens"`
+}
+
+func (u *UserService) Login(e userentity.LoginEntity) (LoginResponse, error) {
 	user, err := u.UserStore.FindByPhone(e.Phone)
 	if err != nil {
-		return model.User{}, err
+		return LoginResponse{}, err
 	}
 
-	// check password is compare with hash
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(e.Password))
 	if err != nil {
-		return model.User{}, errors.New("username or password isn't correct")
+		return LoginResponse{}, errors.New("username or password isn't correct")
 	}
 
-	return user, err
+	accessToken, err := u.AuthSvc.CreateAccessToken(user)
+	if err != nil {
+		return LoginResponse{}, err
+	}
 
-	// create access token and refresh token
+	refreshToken, err := u.AuthSvc.CreateRefreshToken(user)
+	if err != nil {
+		return LoginResponse{}, err
+	}
 
-	// return user and tokens
+	return LoginResponse{
+		User: UserInfo{
+			ID:    user.ID,
+			Phone: user.Phone,
+			Name:  user.Name,
+		},
+		Tokens: Tokens{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
+	}, nil
 }
