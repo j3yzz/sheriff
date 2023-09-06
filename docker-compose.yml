@@ -12,3 +12,19 @@ services:
       - "${MYSQL_PORT}:3306"
     volumes:
       - "./docker-vol/db/data:/var/lib/mysql"
+    networks:
+      - backend-app
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    networks:
+      - backend-app
+networks:
+  backend-app:
+    driver: bridge
